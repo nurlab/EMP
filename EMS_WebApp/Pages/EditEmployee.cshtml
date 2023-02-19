@@ -1,0 +1,33 @@
+﻿@page
+@model EMS.Razor.Pages.EditEmployeeModel
+@{
+
+}
+
+    <h1>Edit Employee</h1>
+    <form method="post">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="@Model.employee.Name " class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="@Model.employee.Email" class="form-control" />
+        </div>
+        <div class="form-group">
+        <label for="dateofbirth">Date of Birth:</label>
+        <input type="date" id="dateofbirth" name="dateofbirth" value="@Model.employee.DateOfBirth.ToString("yyyy-MM-dd")" class="form-control" placeholder="dd-mm-yyyy" />
+        </div>
+        <div class="form-group">
+            <label for="department">Department:</label>
+        <select id="department" name="department" class="form-control" asp-for="@Model.employee.Department">
+                @foreach (var department in Model.departments)
+                {
+                    <option value="@department" >@department</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="/Index" class="btn btn-secondary">Cancel</a>
+        <a onclick="return confirm('Are you sure you want to delete this employee?');">Delete</a>
+    </form>

@@ -1,0 +1,17 @@
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\bin\Release\net6.0\EMS.Repositories.deps.json
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\bin\Release\net6.0\EMS.Repositories.dll
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\bin\Release\net6.0\EMS.Repositories.pdb
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\bin\Release\net6.0\EMS.Core.dll
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\bin\Release\net6.0\EMS.Data.dll
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\bin\Release\net6.0\EMS.Data.pdb
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\bin\Release\net6.0\EMS.Core.pdb
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\obj\Release\net6.0\EMS.Repositories.csproj.AssemblyReference.cache
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\obj\Release\net6.0\EMS.Repositories.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\obj\Release\net6.0\EMS.Repositories.AssemblyInfoInputs.cache
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\obj\Release\net6.0\EMS.Repositories.AssemblyInfo.cs
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\obj\Release\net6.0\EMS.Repositories.csproj.CoreCompileInputs.cache
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\obj\Release\net6.0\EMS.Repositories.csproj.CopyComplete
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\obj\Release\net6.0\EMS.Repositories.dll
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\obj\Release\net6.0\refint\EMS.Repositories.dll
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\obj\Release\net6.0\EMS.Repositories.pdb
+C:\Users\Test\source\repos\EMS_WebApp\EMS_WebApp\EMS_Repositories\obj\Release\net6.0\ref\EMS.Repositories.dll

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "5VHkAY5Rpx/Px0iuYmeS1A88KarZUW2p/cA2p/3/tlM=",
+  "Source": "EMS.WebApi",
+  "BasePath": "_content/EMS.WebApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
