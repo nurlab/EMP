@@ -10,7 +10,7 @@ using EMS.Repositories.Generics;
 
 namespace EMS.Services.Generics
 {
-    public class GService<D, T, R> : IGService<D, T, R>
+    public class GService<D, T, R> : IGService<D, T>
        where R : IGRepository<T>
        where T : class
     {
@@ -29,20 +29,18 @@ namespace EMS.Services.Generics
         #endregion
 
         #region Add Method
-        public virtual IResponseDTO Add(D dtoObject)
+        public virtual IResponseDTO Add(D dtoModel)
         {
             IResponseDTO IResponseDTO = new ResponseDTO();
             try
             {
-                if (dtoObject is IAuditable)
+                if (dtoModel is IAuditable auditable)
                 {
-                    ((IAuditable)dtoObject).CreatedOn = DateTime.Now;
+                    auditable.CreatedOn = DateTime.Now;
                 }
-                T entityObj = _mapper.Map<T>(dtoObject);
+                T entityObj = _mapper.Map<T>(dtoModel);
 
-                object addedModel = _genericRepository.Add(entityObj);
-
-                IResponseDTO.Data = _mapper.Map<D>(addedModel);
+                IResponseDTO.Data = _mapper.Map<D>(_genericRepository.Add(entityObj)) ?? new object();
                 IResponseDTO.IsPassed = true;
                 IResponseDTO.Message = "Ok";
             }
@@ -59,9 +57,9 @@ namespace EMS.Services.Generics
             IResponseDTO IResponseDTO = new ResponseDTO();
             try
             {
-                if (dtoObject is IAuditable)
+                if (dtoObject is IAuditable auditable)
                 {
-                    ((IAuditable)dtoObject).CreatedOn = DateTime.Now;
+                    auditable.CreatedOn = DateTime.Now;
                 }
                 T entityObj = _mapper.Map<T>(dtoObject);
                 await _genericRepository.AddAsync(entityObj);
@@ -84,7 +82,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.Count());
+                response.Data = _mapper.Map<D>(_genericRepository.Count()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -114,16 +112,16 @@ namespace EMS.Services.Generics
         #endregion
 
         #region Remove Method
-        public virtual IResponseDTO Remove(D dtoObject)
+        public virtual IResponseDTO Remove(D entity)
         {
             IResponseDTO IResponseDTO = new ResponseDTO();
             try
             {
-                if (dtoObject is IAuditable)
+                if (entity is IAuditable auditable)
                 {
-                    ((IAuditable)dtoObject).UpdatedOn = DateTime.Now;
+                    auditable.UpdatedOn = DateTime.Now;
                 }
-                T entityObject = _mapper.Map<T>(dtoObject);
+                T entityObject = _mapper.Map<T>(entity);
 
                 ((IBaseEntity)entityObject).IsDeleted = true;
                 IResponseDTO.Data = _genericRepository.Update(entityObject);
@@ -150,7 +148,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.Find(keys));
+                response.Data = _mapper.Map<D>(_genericRepository.Find(keys)) ?? new object(); 
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -177,12 +175,12 @@ namespace EMS.Services.Generics
             }
             return response;
         }
-        public virtual IResponseDTO Find(Func<T, bool> where)
+        public virtual IResponseDTO Find(Func<T, bool> whereCondition)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.Find(where));
+                response.Data = _mapper.Map<D>(_genericRepository.Find(whereCondition)) ?? new object(); 
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -244,12 +242,12 @@ namespace EMS.Services.Generics
             }
             return response;
         }
-        public virtual IResponseDTO GetAll(Expression<Func<T, bool>> where, Expression<Func<T, object>> select)
+        public virtual IResponseDTO GetAll(Expression<Func<T, bool>> whereCondition, Expression<Func<T, object>> select)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<IQueryable<D>>(_genericRepository.GetAll(where, select));
+                response.Data = _mapper.Map<IQueryable<D>>(_genericRepository.GetAll(whereCondition, select));
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -276,12 +274,12 @@ namespace EMS.Services.Generics
             }
             return response;
         }
-        public virtual async Task<IResponseDTO> GetAllAsync(Expression<Func<T, bool>> where)
+        public virtual async Task<IResponseDTO> GetAllAsync(Expression<Func<T, bool>> whereCondition)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<IQueryable<D>>(await _genericRepository.GetAllAsync(where));
+                response.Data = _mapper.Map<IQueryable<D>>(await _genericRepository.GetAllAsync(whereCondition));
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -292,12 +290,12 @@ namespace EMS.Services.Generics
             }
             return response;
         }
-        public virtual async Task<IResponseDTO> GetAllAsync(Expression<Func<T, bool>> where, Expression<Func<T, object>> select)
+        public virtual async Task<IResponseDTO> GetAllAsync(Expression<Func<T, bool>> whereCondition, Expression<Func<T, object>> select)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<IQueryable<D>>(await _genericRepository.GetAllAsync(where, select));
+                response.Data = _mapper.Map<IQueryable<D>>(await _genericRepository.GetAllAsync(whereCondition, select));
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -345,7 +343,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetFirstOrDefault());
+                response.Data = _mapper.Map<D>(_genericRepository.GetFirstOrDefault()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -362,7 +360,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetFirst());
+                response.Data = _mapper.Map<D>(_genericRepository.GetFirst()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -373,12 +371,12 @@ namespace EMS.Services.Generics
             }
             return response;
         }
-        public virtual IResponseDTO GetFirstOrDefault(Expression<Func<T, bool>> where)
+        public virtual IResponseDTO GetFirstOrDefault(Expression<Func<T, bool>> whereCondition)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetFirstOrDefault(where));
+                response.Data = _mapper.Map<D>(_genericRepository.GetFirstOrDefault(whereCondition)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -390,12 +388,12 @@ namespace EMS.Services.Generics
             return response;
         }
 
-        public virtual IResponseDTO GetFirst(Expression<Func<T, bool>> where)
+        public virtual IResponseDTO GetFirst(Expression<Func<T, bool>> whereCondition)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetFirst(where));
+                response.Data = _mapper.Map<D>(_genericRepository.GetFirst(whereCondition)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -412,7 +410,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetFirstOrDefaultAsync());
+                response.Data = _mapper.Map<D>(await _genericRepository.GetFirstOrDefaultAsync()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -429,7 +427,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetFirstAsync());
+                response.Data = _mapper.Map<D>(await _genericRepository.GetFirstAsync()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -441,12 +439,12 @@ namespace EMS.Services.Generics
             return response;
         }
 
-        public virtual async Task<IResponseDTO> GetFirstOrDefaultAsync(Expression<Func<T, bool>> where)
+        public virtual async Task<IResponseDTO> GetFirstOrDefaultAsync(Expression<Func<T, bool>> whereCondition)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetFirstOrDefaultAsync(where));
+                response.Data = _mapper.Map<D>(await _genericRepository.GetFirstOrDefaultAsync(whereCondition)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -458,12 +456,12 @@ namespace EMS.Services.Generics
             return response;
         }
 
-        public virtual async Task<IResponseDTO> GetFirstAsync(Expression<Func<T, bool>> where)
+        public virtual async Task<IResponseDTO> GetFirstAsync(Expression<Func<T, bool>> whereCondition)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetFirstAsync(where));
+                response.Data = _mapper.Map<D>(await _genericRepository.GetFirstAsync(whereCondition)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -480,7 +478,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetLastOrDefault());
+                response.Data = _mapper.Map<D>(_genericRepository.GetLastOrDefault()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -497,7 +495,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetLast());
+                response.Data = _mapper.Map<D>(_genericRepository.GetLast()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -509,12 +507,12 @@ namespace EMS.Services.Generics
             return response;
         }
 
-        public virtual IResponseDTO GetLastOrDefault(Expression<Func<T, bool>> where)
+        public virtual IResponseDTO GetLastOrDefault(Expression<Func<T, bool>> whereCondition)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetLastOrDefault(where));
+                response.Data = _mapper.Map<D>(_genericRepository.GetLastOrDefault(whereCondition)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -526,12 +524,12 @@ namespace EMS.Services.Generics
             return response;
         }
 
-        public virtual IResponseDTO GetLast(Expression<Func<T, bool>> where)
+        public virtual IResponseDTO GetLast(Expression<Func<T, bool>> whereCondition)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetLast(where));
+                response.Data = _mapper.Map<D>(_genericRepository.GetLast(whereCondition)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -548,7 +546,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetLastOrDefaultAsync());
+                response.Data = _mapper.Map<D>(await _genericRepository.GetLastOrDefaultAsync()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -565,7 +563,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetLastAsync());
+                response.Data = _mapper.Map<D>(await _genericRepository.GetLastAsync()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -577,12 +575,12 @@ namespace EMS.Services.Generics
             return response;
         }
 
-        public virtual async Task<IResponseDTO> GetLastOrDefaultAsync(Expression<Func<T, bool>> where)
+        public virtual async Task<IResponseDTO> GetLastOrDefaultAsync(Expression<Func<T, bool>> whereCondition)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetLastOrDefaultAsync(where));
+                response.Data = _mapper.Map<D>(await _genericRepository.GetLastOrDefaultAsync(whereCondition)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -594,12 +592,12 @@ namespace EMS.Services.Generics
             return response;
         }
 
-        public virtual async Task<IResponseDTO> GetLastAsync(Expression<Func<T, bool>> where)
+        public virtual async Task<IResponseDTO> GetLastAsync(Expression<Func<T, bool>> whereCondition)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetLastAsync(where));
+                response.Data = _mapper.Map<D>(await _genericRepository.GetLastAsync(whereCondition)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -615,13 +613,14 @@ namespace EMS.Services.Generics
 
 
         #region Update Method
-        public virtual IResponseDTO Update(D dtoObject)
+        public virtual IResponseDTO Update(D entity)
         {
             IResponseDTO response = new ResponseDTO();
             try
             {
-                T entityToBeUpdated = _mapper.Map<T>(dtoObject);
-                response.Data = _mapper.Map<D>(_genericRepository.Update(entityToBeUpdated));
+                T entityToBeUpdated = _mapper.Map<T>(entity);
+                Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<T> entityEntry = _genericRepository.Update(entityToBeUpdated);
+                response.Data = _mapper.Map<D>(entityEntry) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -640,7 +639,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetMin());
+                response.Data = _mapper.Map<D>(_genericRepository.GetMin()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -657,7 +656,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetMinAsync());
+                response.Data = _mapper.Map<D>(await _genericRepository.GetMinAsync()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -674,7 +673,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetMin(selector));
+                response.Data = _mapper.Map<D>(_genericRepository.GetMin(selector)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -691,7 +690,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetMinAsync(selector));
+                response.Data = _mapper.Map<D>(await _genericRepository.GetMinAsync(selector)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -710,7 +709,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetMax());
+                response.Data = _mapper.Map<D>(_genericRepository.GetMax()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -727,7 +726,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetMaxAsync());
+                response.Data = _mapper.Map<D>(await _genericRepository.GetMaxAsync()) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -744,7 +743,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(_genericRepository.GetMax(selector));
+                response.Data = _mapper.Map<D>(_genericRepository.GetMax(selector)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }
@@ -761,7 +760,7 @@ namespace EMS.Services.Generics
             IResponseDTO response = new ResponseDTO();
             try
             {
-                response.Data = _mapper.Map<D>(await _genericRepository.GetMaxAsync(selector));
+                response.Data = _mapper.Map<D>(await _genericRepository.GetMaxAsync(selector)) ?? new object();
                 response.IsPassed = true;
                 response.Message = "Ok";
             }

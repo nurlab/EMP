@@ -3,14 +3,19 @@ using EMS.Data.Enums;
 using EMS.DTO.Common;
 using EMS.DTO.EmployeeData;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using Microsoft.Extensions.Configuration;
 
-namespace EMS.Razor.APIHelper
+namespace EMS.Razor.ApiHelper
 {
-    public class APIHelper
+    public class ApiHelper
     {
+        private IConfiguration _configuration;
+
+ 
         public List<DepartmentsEnum> GetDepartments()
         {
             List<DepartmentsEnum> departments = Enum.GetValues(typeof(DepartmentsEnum))
@@ -22,18 +27,20 @@ namespace EMS.Razor.APIHelper
         public List<EmployeeDto> GetAllEmployees(string keyword)
         {
 
+            List<EmployeeDto> employees = new List<EmployeeDto>();
             using (var client = new HttpClient())
             {
                 HttpRequestMessage request = new HttpRequestMessage();
-                string uri;
-                uri = !string.IsNullOrEmpty(keyword) ? $"https://localhost:7063/api/Employees/GetAllEmployees?keyword={keyword}" :  $"https://localhost:7063/api/Employees/GetAllEmployees";
+                string uri = !string.IsNullOrEmpty(keyword) ? $"https://localhost:7063/api/Employees/GetAllEmployees?keyword={keyword}" : $"https://localhost:7063/api/Employees/GetAllEmployees";
 
                 request.RequestUri = new Uri(uri);
                 request.Method = HttpMethod.Get;
-                var responseString = JsonConvert.DeserializeObject<ResponseDTO>(client.Send(request).Content.ReadAsStringAsync().Result);
-                
-                if(responseString.Data != null) return JsonConvert.DeserializeObject<List<EmployeeDto>>(responseString.Data.ToString().Trim().TrimStart('{').TrimEnd('}'));
-                return null;
+                string result = client.Send(request).Content.ReadAsStringAsync().Result;
+                var responseString = JsonConvert.DeserializeObject<ResponseDTO>(result);
+
+                return responseString == null || responseString.Data == null
+                    ? employees
+                    : (List<EmployeeDto>)JsonConvert.DeserializeObject<List<EmployeeDto>>(responseString.Data.ToString().Trim().TrimStart('{').TrimEnd('}'));
             }
 
         }
@@ -43,6 +50,7 @@ namespace EMS.Razor.APIHelper
             using (var client = new HttpClient())
             {
                 HttpRequestMessage request = new HttpRequestMessage();
+
                 request.RequestUri = new Uri($"https://localhost:7063/api/Employees/GetEmployeeById?employeeId={employeeId}");
                 request.Method = HttpMethod.Get;
                 var responseString = JsonConvert.DeserializeObject<ResponseDTO>(client.Send(request).Content.ReadAsStringAsync().Result);
@@ -57,35 +65,34 @@ namespace EMS.Razor.APIHelper
 
             using (var client = new HttpClient())
             {
-                ResponseDTO responseDTO = new ResponseDTO();
-
                 // send the PUT request and get the response
                 var response = await client.DeleteAsync($"https://localhost:7063/api/Employees/RemoveEmployee?employeeId={employeeId}");
-
-                responseDTO = JsonConvert.DeserializeObject<ResponseDTO>(response.Content.ReadAsStringAsync().Result);
-                return responseDTO;
+                ResponseDTO responseDTO = JsonConvert.DeserializeObject<ResponseDTO>(response.Content.ReadAsStringAsync().Result);
+                
+                return responseDTO ?? new ResponseDTO();
             }
 
         }
 
-        public async Task<ResponseDTO> UpdateEmployee(EmployeeDto employeeDto)
+        public async Task<ResponseDTO> UpdateEmployee(EmployeeDto? employeeDto)
         {
-
-            using (var client = new HttpClient())
+            if(employeeDto != null)
             {
-                ResponseDTO responseDTO = new ResponseDTO();
-                // serialize the employeeDto object to JSON
-                var jsonContent = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
+                using (var client = new HttpClient())
+                {
+                    // serialize the employeeDto object to JSON
+                    var jsonContent = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
 
-                // send the PUT request and get the response
-                var response = await client.PutAsync("https://localhost:7063/api/Employees/UpdateEmployee", jsonContent);
+                    // send the PUT request and get the response
+                    var response = await client.PutAsync("https://localhost:7063/api/Employees/UpdateEmployee", jsonContent);
 
-                //var response = await client.PutAsJsonAsync(request.RequestUri, new { employeeDto });
-
-                responseDTO = JsonConvert.DeserializeObject<ResponseDTO>(response.Content.ReadAsStringAsync().Result);
-                return responseDTO;
+                    ResponseDTO responseDTO = JsonConvert.DeserializeObject<ResponseDTO>(response.Content.ReadAsStringAsync().Result);
+                    return responseDTO ?? new ResponseDTO();
                 
+                }
             }
+            return new ResponseDTO();
+
 
         }
 
@@ -101,21 +108,12 @@ namespace EMS.Razor.APIHelper
                 // send the PUT request and get the response
                 var response = await client.PostAsync("https://localhost:7063/api/Employees/CreateEmployee", jsonContent);
 
-                //var response = await client.PutAsJsonAsync(request.RequestUri, new { employeeDto });
-
                 responseDTO = JsonConvert.DeserializeObject<ResponseDTO>(response.Content.ReadAsStringAsync().Result);
-                return responseDTO;
+                return responseDTO ?? new ResponseDTO();
 
             }
 
         }
-
-
-        //Task<IResponseDTO> CreateEmployee(EmployeeDto employeeDto);
-        //IResponseDTO GetAllEmployees();
-        //IResponseDTO GetEmployeeById(int employeeId);
-        //Task<IResponseDTO> RemoveEmployee(int employeeId);
-        //Task<IResponseDTO> UpdateEmployee(EmployeeDto employeeDto);
 
     }
 }

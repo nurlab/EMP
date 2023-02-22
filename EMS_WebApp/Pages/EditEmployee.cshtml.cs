@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using EMS.Razor.APIHelper;
+using EMS.Razor.ApiHelper;
 using EMS.DTO.EmployeeData;
 using EMS.DTO.Common;
 using Newtonsoft.Json;
@@ -11,22 +11,18 @@ namespace EMS.Razor.Pages
 {
     public class EditEmployeeModel : PageModel
     {
-
-        //public EditEmployeeModel()
-        //{
-        //    OnGetAsync(1);
-        //}
+        
         [BindProperty]
-        public EmployeeDto employee { get; set; }
+        public EmployeeDto employee { get; set; } = new EmployeeDto();
 
         [BindProperty]
-        public string datrOfBirth { get; set; }
-        public string message { get; set; }
-        public List<Data.Enums.DepartmentsEnum> departments { get; set; }
+        public string? datrOfBirth { get; set; }
+        public string? message { get; set; }
+        public List<Data.Enums.DepartmentsEnum> departments { get; set; } = new List<Data.Enums.DepartmentsEnum>();
         public int id;
         public void OnGet(int id)
         {
-            EMS.Razor.APIHelper.APIHelper aPIHelper = new EMS.Razor.APIHelper.APIHelper();
+            EMS.Razor.ApiHelper.ApiHelper aPIHelper = new EMS.Razor.ApiHelper.ApiHelper();
 
             var res = aPIHelper.GetEmployeeById(id);
 
@@ -35,7 +31,7 @@ namespace EMS.Razor.Pages
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            EMS.Razor.APIHelper.APIHelper aPIHelper = new EMS.Razor.APIHelper.APIHelper();
+            EMS.Razor.ApiHelper.ApiHelper aPIHelper = new EMS.Razor.ApiHelper.ApiHelper();
 
             ResponseDTO responseDTO = await aPIHelper.UpdateEmployee(employee);
 
@@ -43,9 +39,9 @@ namespace EMS.Razor.Pages
 
             if(responseDTO.IsPassed) return RedirectToPage("/Index"); // Redirect to the index page
 
-            responseDTO.Message = message;
+            message = responseDTO.Message;
 
-            return null;
+            return RedirectToPage("/EditEmployee"); // Redirect to the EditEmployee page
         }
 
     }

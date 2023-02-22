@@ -10,9 +10,7 @@ namespace EMS.Data.DataContext
 {
     public class DataSeedInitializations
     {
-        private static AppDbContext _appDbContext;
-        private static IServiceProvider _serviceProvider;
-
+        private static AppDbContext? _appDbContext;
         public static void Seed(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;

@@ -7,7 +7,7 @@ using EMS.Core.Interfaces;
 
 namespace EMS.Services.Generics
 {
-    public interface IGService<D, T, R>
+    public interface IGService<D, T>
     {
         #region Add Method
         IResponseDTO Add(D dtoModel);
@@ -25,35 +25,44 @@ namespace EMS.Services.Generics
 
         #region Get Methods
         IResponseDTO GetAll();
+        IResponseDTO GetAll(Expression<Func<T, bool>> whereCondition);
+        IResponseDTO GetAll(Expression<Func<T, bool>> whereCondition, Expression<Func<T, object>> select);
+
         Task<IResponseDTO> GetAllAsync();
-        IResponseDTO GetAll(Expression<Func<T, bool>> where);
-        Task<IResponseDTO> GetAllAsync(Expression<Func<T, bool>> where);
-        IResponseDTO GetAll(Expression<Func<T, bool>> where, Expression<Func<T, object>> select);
-        Task<IResponseDTO> GetAllAsync(Expression<Func<T, bool>> where, Expression<Func<T, object>> select);
+        Task<IResponseDTO> GetAllAsync(Expression<Func<T, bool>> whereCondition);
+        Task<IResponseDTO> GetAllAsync(Expression<Func<T, bool>> whereCondition, Expression<Func<T, object>> select);
         IResponseDTO GetAllIncluding(params Expression<Func<T, object>>[] includeProperties);
         Task<IResponseDTO> GetAllIncludingAsync(params Expression<Func<T, object>>[] includeProperties);
         IResponseDTO GetFirstOrDefault();
+        IResponseDTO GetFirstOrDefault(Expression<Func<T, bool>> whereCondition);
+
         Task<IResponseDTO> GetFirstOrDefaultAsync();
+        Task<IResponseDTO> GetFirstOrDefaultAsync(Expression<Func<T, bool>> whereCondition);
+
         IResponseDTO GetFirst();
-        Task<IResponseDTO> GetFirstAsync();
+        IResponseDTO GetFirst(Expression<Func<T, bool>> whereCondition);
+
+        IResponseDTO GetLastOrDefault(Expression<Func<T, bool>> whereCondition);
         IResponseDTO GetLastOrDefault();
+
+        Task<IResponseDTO> GetLastOrDefaultAsync(Expression<Func<T, bool>> whereCondition);
         Task<IResponseDTO> GetLastOrDefaultAsync();
+
+        IResponseDTO GetLast(Expression<Func<T, bool>> whereCondition);
         IResponseDTO GetLast();
-        Task<IResponseDTO> GetLastAsync();
-        IResponseDTO GetFirstOrDefault(Expression<Func<T, bool>> where);
-        Task<IResponseDTO> GetFirstOrDefaultAsync(Expression<Func<T, bool>> where);
-        IResponseDTO GetFirst(Expression<Func<T, bool>> where);
-        Task<IResponseDTO> GetFirstAsync(Expression<Func<T, bool>> where);
-        IResponseDTO GetLastOrDefault(Expression<Func<T, bool>> where);
-        Task<IResponseDTO> GetLastOrDefaultAsync(Expression<Func<T, bool>> where);
-        IResponseDTO GetLast(Expression<Func<T, bool>> where);
-        Task<IResponseDTO> GetLastAsync(Expression<Func<T, bool>> where);
+
         #endregion
+        Task<IResponseDTO> GetFirstAsync();
+        Task<IResponseDTO> GetFirstAsync(Expression<Func<T, bool>> whereCondition);
+
+        Task<IResponseDTO> GetLastAsync();
+        Task<IResponseDTO> GetLastAsync(Expression<Func<T, bool>> whereCondition);
+
 
         #region Find Methods
         IResponseDTO Find(params object[] keys);
+        IResponseDTO Find(Func<T, bool> whereCondition);
         Task<IResponseDTO> FindAsync(params object[] keys);
-        IResponseDTO Find(Func<T, bool> where);
         Task<IResponseDTO> FindAsync(Expression<Func<T, bool>> match);
         #endregion
 

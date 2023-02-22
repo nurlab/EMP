@@ -2,7 +2,7 @@
 using EMS.Data.DbModels.EmployeeSchema;
 using EMS.DTO.Common;
 using EMS.DTO.EmployeeData;
-using EMS.Razor.APIHelper;
+using EMS.Razor.ApiHelper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -13,39 +13,38 @@ namespace EMS_WebApp.Pages
 {
     public class IndexModel : PageModel
     {
-        public  List<EmployeeDto> employeeList;
-        APIHelper aPIHelper = new APIHelper();
+        public  List<EmployeeDto> employeeList { get; set; } = new List<EmployeeDto>();
+        readonly ApiHelper aPIHelper = new ApiHelper();
         [BindProperty]
-        public string keyword { get; set; }
-        
+        public string? keyword { get; set; }
+        public string? message { get; set; }
+
         public IndexModel()
         {
-            this.employeeList = null;
-            GetAllEmployees(this.keyword);
+            GetAllEmployees(this.keyword ?? "");
         }
         public void Onget(string keyword)
         {
            this.keyword= keyword;
             GetAllEmployees(keyword);
         }
-        public async Task<IActionResult> OnPostAsync(int? id = null, string handler = null)
+        public async Task<IActionResult> OnPostAsync(int? id = null, string? handler = null)
         {
             if (handler == "Delete")
             {
 
                 ResponseDTO responseDTO = await aPIHelper.RemoveEmployee(id);
 
-                if (responseDTO.IsPassed) return RedirectToPage("/Index"); // Redirect to the index page
+                if (responseDTO != null && !responseDTO.IsPassed) message = responseDTO.Message; // Redirect to the index page
 
-                return null;
+                
             }
-            return null;
+            return RedirectToPage("/Index");
         }
 
         public void GetAllEmployees(string keyword)
         {
-            this.employeeList = null;
-            this.employeeList = aPIHelper.GetAllEmployees(this.keyword);
+            this.employeeList = aPIHelper.GetAllEmployees(this.keyword ?? "");
 
         }
 

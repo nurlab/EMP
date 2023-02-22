@@ -12,7 +12,7 @@ using EMS.Services.Generics;
 
 namespace EMS.Services.Common
 {
-    public class GenericService<D, T, R> : IGService<D, T, R>
+    public class GenericService<D, T, R> : IGService<D, T>
        where R : IGRepository<T>
        where T : class
     {

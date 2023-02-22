@@ -59,7 +59,7 @@ namespace EMS.Services.Employee
             }
             catch (Exception ex)
             {
-                _response.Data = null;
+                _response.Data = new EmployeeDto();
                 _response.Message = "Error " + ex.Message;
                 _response.IsPassed = false;
             }
@@ -71,8 +71,6 @@ namespace EMS.Services.Employee
         {
             try
             {
-                EmployeeDto employeeDto = new EmployeeDto();
-
                 var employee = _employeeRepository.GetFirstOrDefault(x => x.Id == employeeId);
 
                 if (employee == null)
@@ -95,7 +93,7 @@ namespace EMS.Services.Employee
             }
             catch (Exception ex)
             {
-                _response.Data = null;
+                _response.Data = new EmployeeDto();
                 _response.Message = "Error " + ex.Message;
                 _response.IsPassed = false;
             }
@@ -118,7 +116,7 @@ namespace EMS.Services.Employee
                 int save = await _unitOfWork.CommitAsync();
                 if (save == 0)
                 {
-                    _response.Data = null;
+                    _response.Data = new EmployeeDto();
                     _response.IsPassed = false;
                     _response.Message = "Not saved";
                     return _response;
@@ -130,7 +128,7 @@ namespace EMS.Services.Employee
             }
             catch (Exception ex)
             {
-                _response.Data = null;
+                _response.Data = new EmployeeDto();
                 _response.IsPassed = false;
                 _response.Message = "Error " + ex.Message;
             }
@@ -144,7 +142,7 @@ namespace EMS.Services.Employee
                 var ExistingEmployee = await _employeeRepository.GetFirstAsync(x => x.Id == employeeDto.Id);
                 if (employeeDto == null)
                 {
-                    _response.Data = null;
+                    _response.Data = new EmployeeDto();
                     _response.IsPassed = false;
                     _response.Message = "Invalid Employee";
                     return _response;
@@ -152,7 +150,7 @@ namespace EMS.Services.Employee
 
                 if (ExistingEmployee == null)
                 {
-                    _response.Data = null;
+                    _response.Data = new EmployeeDto();
                     _response.IsPassed = false;
                     _response.Message = "Employee Does not Exist";
                     return _response;
@@ -170,7 +168,7 @@ namespace EMS.Services.Employee
                 int save = await _unitOfWork.CommitAsync();
                 if (save == 0)
                 {
-                    _response.Data = null;
+                    _response.Data = new EmployeeDto();
                     _response.IsPassed = false;
                     _response.Message = "Not saved";
                     return _response;
@@ -182,7 +180,7 @@ namespace EMS.Services.Employee
             }
             catch (Exception ex)
             {
-                _response.Data = null;
+                _response.Data = new EmployeeDto();
                 _response.IsPassed = false;
                 _response.Message = "Error " + ex.Message;
             }
@@ -196,7 +194,7 @@ namespace EMS.Services.Employee
                 var employee = await _employeeRepository.GetFirstOrDefaultAsync(x => x.Id == employeeId);
                 if (employee == null)
                 {
-                    _response.Data = null;
+                    _response.Data = new EmployeeDto();
                     _response.IsPassed = false;
                     _response.Message = "Invalid object id";
                     return _response;
@@ -214,7 +212,7 @@ namespace EMS.Services.Employee
                 int save = await _unitOfWork.CommitAsync();
                 if (save == 0)
                 {
-                    _response.Data = null;
+                    _response.Data = new EmployeeDto();
                     _response.IsPassed = false;
                     _response.Message = "Not saved";
                     return _response;
@@ -225,7 +223,7 @@ namespace EMS.Services.Employee
             }
             catch (Exception ex)
             {
-                _response.Data = null;
+                _response.Data = new EmployeeDto();
                 _response.IsPassed = false;
                 _response.Message = "Error " + ex.Message;
             }

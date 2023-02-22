@@ -13,13 +13,6 @@ namespace EMS.DTO.Common
 
         public string Message { get; set; }
 
-        public dynamic Data { get; set; }
-
-        public void Copy(ResponseDTO x)
-        {
-            IsPassed = x.IsPassed;
-            Message = x.Message;
-            Data = x.Data;
-        }
+        public dynamic Data { get; set; } 
     }
 }

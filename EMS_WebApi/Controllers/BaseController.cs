@@ -15,7 +15,7 @@ namespace EMS.Controllers
     [Route("api/[controller]/[action]")]
     public class BaseController : ControllerBase
     {
-        private IHttpContextAccessor _httpContextAccessor;
+        public readonly IHttpContextAccessor _httpContextAccessor;
         public IResponseDTO _response;
 
         public BaseController(IResponseDTO responseDTO, IHttpContextAccessor httpContextAccessor)

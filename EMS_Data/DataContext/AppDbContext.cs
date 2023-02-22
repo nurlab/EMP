@@ -7,12 +7,12 @@ namespace EMS.Data.DataContext
 {
     public class AppDbContext : DbContext
     {
-        DbContextOptions<AppDbContext> _options;
+        private readonly DbContextOptions<AppDbContext> _options;
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             _options =  options;
         }
-       
+        
         public DbSet<Employee> Employees { get; set; }
     }
 }
