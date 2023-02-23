@@ -33,23 +33,31 @@ namespace EMS.Razor.Pages
         [BindProperty, DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
 
+        private readonly string baseUri;
+
+        public AddEmployeeModel(IConfiguration configuration)
+        {
+            baseUri = configuration.GetSection("BaseUrl").Value;
+        }
+
+
         public void OnGet()
         {
-            EMS.Razor.ApiHelper.ApiHelper aPIHelper = new EMS.Razor.ApiHelper.ApiHelper();
+            EMS.Razor.ApiHelper.ApiHelper _aPIHelper = new EMS.Razor.ApiHelper.ApiHelper(baseUri);
 
-            departments = aPIHelper.GetDepartments();
+            departments = _aPIHelper.GetDepartments();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            EMS.Razor.ApiHelper.ApiHelper aPIHelper = new EMS.Razor.ApiHelper.ApiHelper();
+            EMS.Razor.ApiHelper.ApiHelper _aPIHelper = new EMS.Razor.ApiHelper.ApiHelper(baseUri);
 
             this.employee.Name = this.Name ?? "";
             this.employee.Email = this.Email ?? "";
             this.employee.DateOfBirth = this.DateOfBirth;
             this.employee.Department = this.Department ?? "";
 
-            ResponseDTO responseDTO = await aPIHelper.CreateEmployee(employee);
+            ResponseDTO responseDTO = await _aPIHelper.CreateEmployee(employee);
 
             JsonConvert.DeserializeObject<EmployeeDto>(responseDTO.Data.ToString());
 

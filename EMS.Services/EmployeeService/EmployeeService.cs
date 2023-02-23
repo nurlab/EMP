@@ -59,7 +59,7 @@ namespace EMS.Services.Employee
             }
             catch (Exception ex)
             {
-                _response.Data = new EmployeeDto();
+                _response.Data = new List<EmployeeDto>();
                 _response.Message = "Error " + ex.Message;
                 _response.IsPassed = false;
             }

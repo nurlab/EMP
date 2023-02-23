@@ -13,9 +13,12 @@ namespace EMS.Razor.ApiHelper
 {
     public class ApiHelper
     {
-        private IConfiguration _configuration;
+        private string _baseUri;
 
- 
+        public ApiHelper(string baseUri)
+        {
+            _baseUri = baseUri;
+        }
         public List<DepartmentsEnum> GetDepartments()
         {
             List<DepartmentsEnum> departments = Enum.GetValues(typeof(DepartmentsEnum))
@@ -31,7 +34,7 @@ namespace EMS.Razor.ApiHelper
             using (var client = new HttpClient())
             {
                 HttpRequestMessage request = new HttpRequestMessage();
-                string uri = !string.IsNullOrEmpty(keyword) ? $"https://localhost:7063/api/Employees/GetAllEmployees?keyword={keyword}" : $"https://localhost:7063/api/Employees/GetAllEmployees";
+                string uri = !string.IsNullOrEmpty(keyword) ? $"{_baseUri}{ApiDirectory.GetAllEmployees}?keyword={keyword}" : $"{_baseUri}{ApiDirectory.GetAllEmployees}";
 
                 request.RequestUri = new Uri(uri);
                 request.Method = HttpMethod.Get;
@@ -40,7 +43,7 @@ namespace EMS.Razor.ApiHelper
 
                 return responseString == null || responseString.Data == null
                     ? employees
-                    : (List<EmployeeDto>)JsonConvert.DeserializeObject<List<EmployeeDto>>(responseString.Data.ToString().Trim().TrimStart('{').TrimEnd('}'));
+                    : JsonConvert.DeserializeObject<List<EmployeeDto>>(responseString.Data.ToString().Trim().TrimStart('{').TrimEnd('}'));
             }
 
         }
@@ -51,7 +54,7 @@ namespace EMS.Razor.ApiHelper
             {
                 HttpRequestMessage request = new HttpRequestMessage();
 
-                request.RequestUri = new Uri($"https://localhost:7063/api/Employees/GetEmployeeById?employeeId={employeeId}");
+                request.RequestUri = new Uri($"{_baseUri}{ApiDirectory.GetEmployeeById}?employeeId={employeeId}");
                 request.Method = HttpMethod.Get;
                 var responseString = JsonConvert.DeserializeObject<ResponseDTO>(client.Send(request).Content.ReadAsStringAsync().Result);
                 EmployeeDto _EmployeeDto = JsonConvert.DeserializeObject<EmployeeDto>(responseString.Data.ToString());
@@ -66,7 +69,7 @@ namespace EMS.Razor.ApiHelper
             using (var client = new HttpClient())
             {
                 // send the PUT request and get the response
-                var response = await client.DeleteAsync($"https://localhost:7063/api/Employees/RemoveEmployee?employeeId={employeeId}");
+                var response = await client.DeleteAsync($"{_baseUri}{ApiDirectory.RemoveEmployee}?employeeId={employeeId}");
                 ResponseDTO responseDTO = JsonConvert.DeserializeObject<ResponseDTO>(response.Content.ReadAsStringAsync().Result);
                 
                 return responseDTO ?? new ResponseDTO();
@@ -84,7 +87,7 @@ namespace EMS.Razor.ApiHelper
                     var jsonContent = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
 
                     // send the PUT request and get the response
-                    var response = await client.PutAsync("https://localhost:7063/api/Employees/UpdateEmployee", jsonContent);
+                    var response = await client.PutAsync($"{_baseUri}{ApiDirectory.UpdateEmployee}", jsonContent);
 
                     ResponseDTO responseDTO = JsonConvert.DeserializeObject<ResponseDTO>(response.Content.ReadAsStringAsync().Result);
                     return responseDTO ?? new ResponseDTO();
@@ -106,7 +109,7 @@ namespace EMS.Razor.ApiHelper
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(employeeDto), Encoding.UTF8, "application/json");
 
                 // send the PUT request and get the response
-                var response = await client.PostAsync("https://localhost:7063/api/Employees/CreateEmployee", jsonContent);
+                var response = await client.PostAsync($"{_baseUri}{ApiDirectory.CreateEmployee}", jsonContent);
 
                 responseDTO = JsonConvert.DeserializeObject<ResponseDTO>(response.Content.ReadAsStringAsync().Result);
                 return responseDTO ?? new ResponseDTO();

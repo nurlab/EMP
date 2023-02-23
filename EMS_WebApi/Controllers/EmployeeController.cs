@@ -6,6 +6,7 @@ using EMS.DTO.EmployeeData;
 using EMS.Services.Employee;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,19 +15,22 @@ namespace EMS.WebApi.Controllers
 {
 
     public class EmployeesController : BaseController
+    {
+    private readonly IEmployeeService _employeeService;
+    private readonly IConfiguration _configuration;
+        private readonly string connectionString;
+
+        public EmployeesController(
+                IEmployeeService employeeService,
+                IResponseDTO response,
+                IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(response, httpContextAccessor)
         {
-            private readonly IEmployeeService _employeeService;
-
-            public EmployeesController(
-                  IEmployeeService employeeService,
-                  IResponseDTO response,
-                  IHttpContextAccessor httpContextAccessor) : base(response, httpContextAccessor)
-            {
-            _employeeService = employeeService;
-            }
+        _employeeService = employeeService;
+            _configuration = configuration;
+        }
 
 
-            [AllowAnonymous]
+        [AllowAnonymous]
             [HttpGet]
             public IResponseDTO GetAllEmployees(string? keyword)
             {

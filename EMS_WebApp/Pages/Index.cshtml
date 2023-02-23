@@ -44,7 +44,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model.employeeList !=null)
+                    @if (Model.employeeList.Count() == 0)
+                    {
+                     <tr>
+                            <td colspan="4" >
+                                <p style="text-align: center; font-style:italic">No Employees yet </p>
+                            </td>
+                        </tr>                       
+                    }
+
                     @foreach (var employee in Model.employeeList)
                     {
                         <tr>

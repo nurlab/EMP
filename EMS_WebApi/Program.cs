@@ -20,11 +20,14 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).Conf
 var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
 var mapper = config.CreateMapper();
 builder.Services.AddSingleton(mapper);
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlServer("Data Source=mohammednuru;Initial Catalog=ems_db;Integrated Security=True;TrustServerCertificate=True"));
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddScoped<DataSeedInitializations>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+;
 
 var app = builder.Build();
 
