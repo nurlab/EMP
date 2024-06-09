@@ -6,6 +6,7 @@ using EMS.WebApi.Controllers;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using Xunit;
 
@@ -17,13 +18,14 @@ namespace EMS.Tests.Controllers
         private readonly EmployeesController _controller;
         private readonly IResponseDTO _response;
         private readonly HttpContext _httpContext;
+        private readonly IConfiguration _configuration;
 
         public EmployeesControllerTests()
         {
             _employeeService = A.Fake<IEmployeeService>();
             _response = A.Fake<IResponseDTO>();
             _httpContext = A.Fake<HttpContext>();
-            _controller = new EmployeesController(_employeeService, _response, new HttpContextAccessor { HttpContext = _httpContext });
+            _controller = new EmployeesController(_employeeService, _response, new HttpContextAccessor { HttpContext = _httpContext }, _configuration);
         }
 
         [Fact]
